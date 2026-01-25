@@ -61,7 +61,7 @@
   <!-- Disqus -->
   {{- if and site.Config.Services.Disqus.Shortname (not (eq .Params.comments
   false)) -}}
-  <div class="mt-24" id="disqus_thread"></div>
+  <div class="mt-24! text-black dark:text-white" id="disqus_thread"></div>
   <script>
     const disqusShortname = '{{- site.Config.Services.Disqus.Shortname -}}';
     const script = document.createElement('script');
@@ -73,7 +73,7 @@
 
   <!-- GraphComment -->
   {{- if and site.Params.graphCommentId (not (eq .Params.comments false)) -}}
-  <div class="mt-24" id="graphcomment"></div>
+  <div class="mt-24! text-black dark:text-white" id="graphcomment"></div>
   <script type="text/javascript">
     var __semio__params = {
       graphcommentId: '{{- site.Params.graphCommentId  -}}',
@@ -108,7 +108,7 @@
 
   <!-- giscus comment -->
   {{- if and site.Params.giscus.repo (not (eq .Params.comments false)) -}}
-  <div class="giscus mt-24"></div>
+  <div class="giscus mt-24! text-black dark:text-white"></div>
   <script
     src="https://giscus.app/client.js"
     data-repo="{{- site.Params.giscus.repo -}}"
