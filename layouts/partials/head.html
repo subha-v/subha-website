@@ -8,7 +8,7 @@
 
   <!-- title -->
   <title>
-    {{- if not .IsHome -}}{{- .Title -}} - {{- end -}}{{- site.Title -}}
+    {{- if not .IsHome -}}{{- .Title }} - {{ end -}}{{- site.Title -}}
   </title>
 
   <!-- meta -->
@@ -34,8 +34,8 @@
   <!---->
   {{- $custom := resources.Get "custom.css" -}}
   <!---->
-  {{- $css := slice $main $custom | resources.Concat "main.css" | minify -}}
-  <link rel="preload stylesheet" as="style" href="{{- $css.Permalink -}}" />
+  {{- $css := slice $main $custom | resources.Concat "main.css" | minify | fingerprint -}}
+  <link rel="preload stylesheet" as="style" href="{{- $css.Permalink -}}" integrity="{{ $css.Data.Integrity }}" />
 
   <!-- dark icon -->
   {{- $dark_icon := "theme.png" -}}
