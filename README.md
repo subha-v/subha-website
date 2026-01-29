@@ -6,13 +6,11 @@ A simple static HTML personal website with blog support.
 
 ```
 .
-├── index.html          # Home page
-├── about.html          # About page with profile picture
+├── index.html          # Main page (About) with two-column layout
 ├── projects.html       # Projects and research page
 ├── blog.html           # Blog listing page
 ├── style.css           # Global styles
 ├── images/             # Images directory
-│   └── profile.jpg     # Your profile picture (add your own)
 └── blog/               # Blog posts directory
     ├── example-post.html   # Example post with LaTeX demo
     └── post-template.html  # Template for new posts
@@ -22,14 +20,14 @@ A simple static HTML personal website with blog support.
 
 - Simple, clean design with Times New Roman font
 - White background with black text
-- Responsive layout
+- Two-column layout: photo/contact on left, bio on right
 - Blog with Markdown and LaTeX support (via marked.js and MathJax)
 
 ## Usage
 
-### Adding a Profile Picture
+### Profile Picture
 
-1. Add your profile picture to the `images/` folder as `profile.jpg`
+The profile picture is located in the `images/` folder and referenced in `index.html`.
 
 ### Creating a New Blog Post
 
