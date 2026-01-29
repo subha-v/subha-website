@@ -1,7 +1,7 @@
 ---
-title: 'Our Difference'
-button: 'About us'
+title: 'About Me'
+button: 'Learn More'
 weight: 2
 ---
 
-Lorem ipsum dolor sit amet, et essent mediocritatem quo, choro volumus oporteat an mei. Ipsum dolor sit amet, et essent mediocritatem quo.
+CS @ Stanford | ML Researcher | Building AI systems that bridge the gap between cutting-edge research and real-world impact. Currently focused on human-in-the-loop AI and NLP for underserved communities.

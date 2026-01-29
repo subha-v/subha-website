@@ -1,7 +1,7 @@
-baseURL = "https://hugo-paper.vercel.app/"
-title = "Paper"
-author = "Steve Francia"
-copyright = "© 2025, lee.so"
+baseURL = "https://subhavadlamannati.com/"
+title = "Subha Vadlamannati"
+author = "Subha Vadlamannati"
+copyright = "© 2025, Subha Vadlamannati"
 languageCode = "en"
 DefaultContentLanguage = "en"
 enableInlineShortcodes = true
@@ -9,20 +9,19 @@ enableInlineShortcodes = true
 # See https://github.com/gohugoio/hugo/issues/7228#issuecomment-714490456
 ignoreErrors = ["error-remote-getjson"]
 [pagination]
-  pagerSize = 3
+  pagerSize = 5
 
 # ------------------------------
 theme = "hugo-paper"
 
 [params]
   color = 'linen'
-  twitter = 'nanxiaobei'
-  github = 'nanxiaobei'
-  instagram = 'nan.xiaobei'
+  github = 'subha-v'
+  linkedin = 'subhavadlamannati'
 
-avatar = 'nanxiaobei@gmail.com'
-  name = 'Lee'
-  bio = 'Discover fresh context'
+  avatar = '/profile.jpg'
+  name = 'Subha Vadlamannati'
+  bio = 'CS @ Stanford | ML Researcher | Building at the intersection of AI and human interaction'
 # ------------------------------
 
 # needed to  render raw HTML (e.g. <sub>, <sup>, <kbd>, <mark>)
@@ -41,10 +40,30 @@ avatar = 'nanxiaobei@gmail.com'
     url = "/about/"
     weight = 10
   [[menu.main]]
+    identifier = "experience"
+    name = "Experience"
+    url = "/experience/"
+    weight = 20
+  [[menu.main]]
+    identifier = "projects"
+    name = "Projects"
+    url = "/projects/"
+    weight = 30
+  [[menu.main]]
+    identifier = "publications"
+    name = "Publications"
+    url = "/publications/"
+    weight = 40
+  [[menu.main]]
+    identifier = "blog"
+    name = "Blog"
+    url = "/post/"
+    weight = 50
+  [[menu.main]]
     identifier = "contact"
     name = "Contact"
     url = "/contact/"
-    weight = 10
+    weight = 60
 
 [taxonomies]
 category = "categories"

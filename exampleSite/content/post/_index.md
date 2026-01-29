@@ -1,6 +1,5 @@
 +++
-aliases = ["posts", "articles", "blog", "showcase", "docs"]
-title = "Posts"
-author = "lee.so"
-tags = ["index"]
+aliases = ["posts", "articles", "blog"]
+title = "Blog"
+author = "Subha Vadlamannati"
 +++
