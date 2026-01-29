@@ -1,80 +1,61 @@
 # Subha Vadlamannati - Personal Website
 
-Personal portfolio website for Subha Vadlamannati, built with [Hugo](https://gohugo.io/) and the [Paper theme](https://github.com/nanxiaobei/hugo-paper).
+A simple static HTML personal website with blog support.
 
-## About
-
-This website showcases my:
-- **About** - Background, education, and interests
-- **Experience** - Professional work history and research positions
-- **Projects** - Technical projects and research work
-- **Publications** - Academic papers and research publications
-- **Blog** - Thoughts on AI, ML research, and technology
-- **Contact** - Ways to get in touch
-
-## Project Structure
+## Structure
 
 ```
-subha-website/
-├── exampleSite/           # Main site content
-│   ├── content/           # Markdown content files
-│   │   ├── about.md       # About page
-│   │   ├── contact.md     # Contact page
-│   │   ├── experience.md  # Experience page
-│   │   ├── projects.md    # Projects page
-│   │   ├── publications.md # Publications page
-│   │   ├── homepage/      # Homepage sections
-│   │   └── post/          # Blog posts
-│   ├── static/            # Static assets (images, etc.)
-│   └── hugo.toml          # Site configuration
-├── layouts/               # Hugo templates
-├── assets/                # CSS and styling
-└── static/                # Theme static files
+.
+├── index.html          # Home page
+├── about.html          # About page with profile picture
+├── projects.html       # Projects and research page
+├── blog.html           # Blog listing page
+├── style.css           # Global styles
+├── images/             # Images directory
+│   └── profile.jpg     # Your profile picture (add your own)
+└── blog/               # Blog posts directory
+    ├── example-post.html   # Example post with LaTeX demo
+    └── post-template.html  # Template for new posts
 ```
 
-## Development
+## Features
 
-### Prerequisites
-- [Hugo](https://gohugo.io/installation/) (v0.57.1+)
-- [Bun](https://bun.sh/) or Node.js
+- Simple, clean design with Times New Roman font
+- White background with black text
+- Responsive layout
+- Blog with Markdown and LaTeX support (via marked.js and MathJax)
 
-### Running Locally
+## Usage
+
+### Adding a Profile Picture
+
+1. Add your profile picture to the `images/` folder as `profile.jpg`
+
+### Creating a New Blog Post
+
+1. Copy `blog/post-template.html` and rename it
+2. Update the title in `<title>` and `<h1>`
+3. Update the date
+4. Write your content in the `markdown` variable using Markdown syntax
+5. Add an entry to `blog.html` linking to your new post
+
+### LaTeX in Blog Posts
+
+- Inline math: `$E = mc^2$`
+- Display math: `$$\int_0^\infty e^{-x^2} dx$$`
+
+### Images in Blog Posts
+
+```markdown
+![Alt text](../images/your-image.jpg)
+```
+
+## Local Development
+
+Simply open `index.html` in a web browser, or use a local server:
 
 ```bash
-cd exampleSite
-hugo server -D
+python -m http.server 8000
 ```
 
-Or with CSS watching:
-```bash
-bun run dev
-```
-
-### Building for Production
-
-```bash
-bun run build
-```
-
-## Customization
-
-Edit `exampleSite/hugo.toml` to update:
-- Site title and description
-- Social media links
-- Avatar and bio
-- Menu items
-
-## Tech Stack
-
-- **Static Site Generator**: Hugo
-- **Theme**: Hugo Paper
-- **Styling**: Tailwind CSS
-- **Deployment**: Vercel (or any static hosting)
-
-## License
-
-Content is personal. Theme is [MIT Licensed](https://github.com/nanxiaobei/hugo-paper/blob/main/LICENSE).
-
----
-
-Built with Hugo Paper theme by [nanxiaobei](https://github.com/nanxiaobei/hugo-paper)
+Then visit http://localhost:8000
