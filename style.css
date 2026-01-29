@@ -56,9 +56,39 @@ footer {
 }
 
 .profile-img {
-    max-width: 250px;
-    margin: 20px 0;
+    width: 100%;
+    max-width: 200px;
+    margin-bottom: 20px;
     border-radius: 5px;
+}
+
+.about-container {
+    display: flex;
+    gap: 40px;
+    margin-top: 20px;
+}
+
+.about-left {
+    flex-shrink: 0;
+    width: 200px;
+}
+
+.about-right {
+    flex: 1;
+}
+
+.contact-info {
+    margin-top: 10px;
+}
+
+.contact-info h3 {
+    margin-bottom: 10px;
+    font-size: 1em;
+}
+
+.contact-info p {
+    margin-bottom: 5px;
+    font-size: 0.95em;
 }
 
 .project {
