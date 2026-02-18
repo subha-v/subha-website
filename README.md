@@ -11,6 +11,7 @@ A simple static HTML personal website with blog support.
 ├── blog.html           # Blog listing page
 ├── style.css           # Global styles
 ├── images/             # Images directory
+│   └── PROJECTS/       # Project images (TORQ, etc.)
 └── blog/               # Blog posts directory
     ├── example-post.html   # Example post with LaTeX demo
     └── post-template.html  # Template for new posts
