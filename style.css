@@ -91,6 +91,11 @@ footer {
     font-size: 0.95em;
 }
 
+.bunny-img {
+    width: 80px;
+    margin-top: 15px;
+}
+
 .project {
     margin-bottom: 30px;
     padding-bottom: 20px;
