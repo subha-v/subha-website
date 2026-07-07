@@ -1,0 +1,37 @@
+---
+// A curious sitting cat, used on the 404 page.
+import PixelSprite from './PixelSprite.astro';
+
+interface Props {
+  class?: string;
+}
+const { class: className } = Astro.props;
+
+// K outline · G gray coat · S shadow gray · W cream · P pink · E eyes
+const grid = [
+  '.KK.....KK..',
+  'KGPK...KPGK.',
+  'KGGKKKKKGGK.',
+  'KGGGGGGGGGK.',
+  'KGEGGGGGEGK.',
+  'KGGGWWWGGGK.',
+  '.KGGWPWGGK..',
+  '..KGGGGGK...',
+  '.KGGGGGGGK..',
+  'KGGGGGGGGGK.',
+  'KGSGGGGGSGK.',
+  'KGSGGGGGSGKK',
+  'KGWGGGGGWGKK',
+  '.KKKKKKKKK..',
+];
+const palette = {
+  K: '#4a5163',
+  G: '#b8c0cd',
+  S: '#9aa4b4',
+  W: '#fdf3e4',
+  P: '#f2a3c0',
+  E: '#3d4657',
+};
+---
+
+<PixelSprite grid={grid} palette={palette} class={className} title="a curious pixel cat" />

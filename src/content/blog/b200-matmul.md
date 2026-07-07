@@ -1,71 +1,35 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Optimized B200 Matrix Multiplication - Subha Vadlamannati</title>
-    <link rel="stylesheet" href="../style.css">
-    <link rel="icon" type="image/png" href="../images/bunny-removebg-preview.png">
-    <script>
-        MathJax = {
-            tex: {
-                inlineMath: [['$', '$'], ['\\(', '\\)']],
-                displayMath: [['$$', '$$'], ['\\[', '\\]']]
-            }
-        };
-    </script>
-    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/cpp.min.js"></script>
-</head>
-<body>
-    <nav>
-        <a href="../index.html">About</a>
-        <a href="../projects.html">Projects</a>
-        <a href="../blog.html">Blog</a>
-    </nav>
+---
+title: Optimized B200 Matrix Multiplication
+description: A deep dive into building a performant matmul kernel using NVIDIA's B200 GPU with persistent kernels, pipelining, TMA, and TMEM.
+date: 2025-01-28
+---
 
-    <main>
-        <article>
-            <h1>Optimized B200 Matrix Multiplication</h1>
-            <p class="blog-date">January 28, 2025</p>
-
-            <div id="content" class="blog-content"></div>
-        </article>
-    </main>
-
-    <footer>
-        <p>&copy; 2025 Subha Vadlamannati</p>
-    </footer>
-
-    <script>
-        const markdown = `
 Hi everyone! Today we'll be looking into how to build a performant matrix multiplication kernel using the new NVIDIA B200 architecture :)
 
 I'll be walking through the code step-by-step, explaining the specific hardware features of Blackwell that allow us to achieve high utilization.
 
 First, let's define the problem. We want to solve $C = AB$ where:
-* $A$ is of size $M \\times K$
-* $B$ is of size $K \\times N$
-* $C$ is of size $M \\times N$
+
+* $A$ is of size $M \times K$
+* $B$ is of size $K \times N$
+* $C$ is of size $M \times N$
 
 ## 1. The Strategy: Persistent Kernels
-For this implementation, I used a **Persistent Kernel** approach. 
+
+For this implementation, I used a **Persistent Kernel** approach.
 
 In a standard CUDA kernel, you might launch 10,000 blocks to cover a large matrix. The GPU scheduler assigns them to SMs, retires them when done, and fetches new ones. This incurs scheduling overhead and forces repeated data fetching from global memory.
 
 **The Persistent Approach:**
 Instead of launching a block for every tile, we launch exactly enough blocks to fill the hardware. The B200 has **148 Streaming Multiprocessors (SMs)**, so we launch **148 blocks**.
 
-These blocks never "finish." Instead, they run a \`while\` loop, grabbing a claim on a workload tile (via an atomic counter or simple grid striding), processing it, and immediately moving to the next. This allows us to keep data in the L2 cache and maintain our TMEM allocations without setup overhead.
-
-![B200 Matmul Implementation](../images/B200_Matmul_Implementation.jpeg)
+These blocks never "finish." Instead, they run a `while` loop, grabbing a claim on a workload tile (via an atomic counter or simple grid striding), processing it, and immediately moving to the next. This allows us to keep data in the L2 cache and maintain our TMEM allocations without setup overhead.
 
 ### Thread Block Hierarchy
+
 Within each of our 148 blocks, we use 256 threads divided into **Warpgroups**:
-* **Producer Warpgroup (Warp 0):** Handles **TMA** (loading data from Global $\\to$ Shared Memory).
+
+* **Producer Warpgroup (Warp 0):** Handles **TMA** (loading data from Global $\to$ Shared Memory).
 * **Consumer Warpgroup (Warp 1):** Handles **MMA** (Matrix Multiply Accumulate using Tensor Cores).
 
 ## 2. Blackwell Hardware Features
@@ -73,18 +37,20 @@ Within each of our 148 blocks, we use 256 threads divided into **Warpgroups**:
 To make this efficient, we leverage three specific hardware features: **TMA**, **TMEM**, and **Swizzling**.
 
 ### TMA (Tensor Memory Accelerator)
+
 TMA is a dedicated hardware engine that copies data from Global Memory to Shared Memory asynchronously. It frees up our threads to do math while data is moving.
 
 ### TMEM (Tensor Memory)
 
 This is a new memory type in the Blackwell architecture.
+
 * **Old Way:** Tensor cores accumulated results into Registers (RF).
 * **Blackwell Way:** TMEM acts as a dedicated accumulator memory shared across the SM.
 * **Benefit:** It isolates the accumulation traffic, preventing register file pressure.
 
-We allocate TMEM at the start of the kernel using \`tcgen05.alloc\`:
+We allocate TMEM at the start of the kernel using `tcgen05.alloc`:
 
-\`\`\`cpp
+```cpp
 // Allocate TMEM columns (performed by Warp 1)
 if (threadIdx.x >= 32 && threadIdx.x < 64) { 
     const int addr = static_cast<int>(__cvta_generic_to_shared(tmem_base));
@@ -95,33 +61,37 @@ if (threadIdx.x >= 32 && threadIdx.x < 64) {
     );
 }
 __syncthreads(); 
-\`\`\`
+```
 
 ### Swizzling (The Hidden Optimizer)
-One detail often overlooked is memory layout. In my host code, when creating the TMA descriptors, I specifically set \`CU_TENSOR_MAP_SWIZZLE_128B\`.
 
-\`\`\`cpp
+One detail often overlooked is memory layout. In my host code, when creating the TMA descriptors, I specifically set `CU_TENSOR_MAP_SWIZZLE_128B`.
+
+```cpp
 // From host code
 cuTensorMapEncodeTiled(
     ..., 
     CU_TENSOR_MAP_SWIZZLE_128B, // <--- Key for performance
     ...
 );
-\`\`\`
+```
 
 Swizzling rearranges the layout of the bytes in shared memory to avoid **Bank Conflicts**. Without this, multiple threads might try to access the same memory bank simultaneously, serializing access and killing bandwidth.
 
 ## 3. The Pipeline (Producer vs. Consumer)
-We use a **Multi-Stage Pipeline** with a ring buffer of depth \`PIPE_DEPTH = 4\`.
-* **The Producer** loads into slot $(X+3) \\% 4$.
+
+We use a **Multi-Stage Pipeline** with a ring buffer of depth `PIPE_DEPTH = 4`.
+
+* **The Producer** loads into slot $(X+3) \% 4$.
 * **The Consumer** computes on slot $X$.
 
 We need strict synchronization to ensure the Producer doesn't overwrite data the Consumer is still using, and the Consumer doesn't read data that hasn't arrived yet. We use **mbarriers** for this.
 
 ### The Producer (TMA Warp)
-The producer's job is to keep the pipeline full. It issues \`cp.async.bulk\` commands.
 
-\`\`\`cpp
+The producer's job is to keep the pipeline full. It issues `cp.async.bulk` commands.
+
+```cpp
 // Producer Logic (Warp 0)
 for (int iter_k = 0; iter_k < num_k_tiles; iter_k++) {
     int stage_id = iter_k % PIPE_DEPTH;
@@ -138,12 +108,13 @@ for (int iter_k = 0; iter_k < num_k_tiles; iter_k++) {
     // 3. Issue TMA Load (A and B tiles)
     // ... cp.async.bulk instructions ...
 }
-\`\`\`
+```
 
 ### The Consumer (MMA Warp)
+
 The consumer waits for data, computes, and then tells the producer "I'm done with this buffer."
 
-\`\`\`cpp
+```cpp
 // Consumer Logic (Warp 1)
 for (int iter_k = 0; iter_k < num_k_tiles; iter_k++) {
     int stage_id = iter_k % PIPE_DEPTH;
@@ -160,32 +131,34 @@ for (int iter_k = 0; iter_k < num_k_tiles; iter_k++) {
         :: "r"(mma_mbar_base + stage_id * 8) : "memory"
     );
 }
-\`\`\`
-
-![B200 Matmul Implementation 2](../images/B200_Matmul_Implementation_2.jpeg)
+```
 
 ## 4. Optimization: From 800 to 1200 TFLOPs
-Initially, my kernel was stuck at 800 TFLOPs. 
+
+Initially, my kernel was stuck at 800 TFLOPs.
 
 **The Bug:**
-My original implementation was too synchronous. In every \`k_tile\` iteration, I was waiting for the TMA to arrive, doing the math, and then waiting for the math to finish *before* moving to the next tile.
+My original implementation was too synchronous. In every `k_tile` iteration, I was waiting for the TMA to arrive, doing the math, and then waiting for the math to finish *before* moving to the next tile.
 
 **The Fix (Asynchronous Pipeline):**
 I decoupled the wait signals.
+
 1.  **Consumer** never waits for MMA to finish. It issues the command, commits the completion signal to the barrier, and immediately loops to the next tile.
 2.  **Producer** only checks that barrier when it wraps around the ring buffer and needs to *reuse* that specific slot.
 
 This separation allows the GPU to have TMA copies and Tensor Core math overlapping almost perfectly. This pushed performance to **~1200 TFLOPs**.
 
 ## 5. The Epilogue: Escaping TMEM
+
 Once the main loop finishes, our result $C$ sits in TMEM. We can't write TMEM directly to Global Memory. We have to:
+
 1.  Load from TMEM to Registers.
 2.  Convert formats (Accumulation is FP32, Output is BF16).
 3.  Store to Global Memory.
 
-We use \`int4\` vectorization to maximize write bandwidth:
+We use `int4` vectorization to maximize write bandwidth:
 
-\`\`\`cpp
+```cpp
 // Epilogue: Direct TMEM -> Global
 for (int n = 0; n < TILE_N / 8; n++) {
     // 1. Load from TMEM
@@ -203,22 +176,10 @@ for (int n = 0; n < TILE_N / 8; n++) {
     // 3. Vectorized Store (16 bytes = int4)
     reinterpret_cast<int4*>(out_ptr)[0] = reinterpret_cast<int4*>(out)[0];
 }
-\`\`\`
+```
 
 ## Conclusion
+
 By combining Persistent Kernels, Blackwell's new TMEM/TMA engines, and a carefully managed asynchronous pipeline, we can extract massive performance from the B200.
 
-If you have questions about the \`mma_mbar\` logic or the specific PTX instructions, feel free to reach out!
-`;
-
-        // Render markdown
-        document.getElementById('content').innerHTML = marked.parse(markdown);
-
-        // Highlight Code
-        hljs.highlightAll();
-
-        // Re-render MathJax after markdown is loaded
-        MathJax.typeset();
-    </script>
-</body>
-</html>
+If you have questions about the `mma_mbar` logic or the specific PTX instructions, feel free to reach out!

@@ -1,0 +1,281 @@
+@import 'tailwindcss';
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+/*
+  Palette: quiet paper + slate ink (from the blog reference), with a
+  sakura-pink accent drawn from the bunny mascot.
+*/
+:root {
+  --c-paper: #fafcfd;
+  --c-card: #f1f4f7;
+  --c-ink: #33404f;
+  --c-soft: #5f6b7a;
+  --c-faint: #8d97a3;
+  --c-line: #e3e9ef;
+  --c-sakura: #b1517f;
+  --c-sakura-bright: #d16ba5;
+  --c-sakura-soft: #f9eaf2;
+}
+
+.dark {
+  --c-paper: #14181e;
+  --c-card: #1d232c;
+  --c-ink: #dbe2ea;
+  --c-soft: #a3adb9;
+  --c-faint: #6f7a87;
+  --c-line: #2a323c;
+  --c-sakura: #e895bd;
+  --c-sakura-bright: #e895bd;
+  --c-sakura-soft: #2c2129;
+}
+
+@theme inline {
+  --color-paper: var(--c-paper);
+  --color-card: var(--c-card);
+  --color-ink: var(--c-ink);
+  --color-soft: var(--c-soft);
+  --color-faint: var(--c-faint);
+  --color-line: var(--c-line);
+  --color-sakura: var(--c-sakura);
+  --color-sakura-bright: var(--c-sakura-bright);
+  --color-sakura-soft: var(--c-sakura-soft);
+  --font-sans: 'Geist Variable', ui-sans-serif, system-ui, sans-serif;
+  --font-mono: 'Geist Mono Variable', ui-monospace, 'SF Mono', Menlo, monospace;
+  --font-pixel: 'Silkscreen', 'Geist Mono Variable', monospace;
+}
+
+html {
+  background-color: var(--c-paper);
+  color: var(--c-ink);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  scroll-behavior: smooth;
+}
+
+::selection {
+  background-color: var(--c-sakura-soft);
+  color: var(--c-sakura);
+}
+
+:focus-visible {
+  outline: 2px solid var(--c-sakura-bright);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+/* ---------- links outside prose ---------- */
+.quiet-link {
+  color: var(--c-soft);
+  text-decoration: none;
+  transition: color 150ms ease;
+}
+.quiet-link:hover {
+  color: var(--c-ink);
+}
+
+/* ---------- prose (blog posts + page copy) ---------- */
+.prose {
+  color: var(--c-soft);
+  font-size: 1rem;
+  line-height: 1.7;
+}
+.prose > * + * {
+  margin-top: 1.25rem;
+}
+.prose h2 {
+  color: var(--c-ink);
+  font-size: 1.125rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  margin-top: 3rem;
+  scroll-margin-top: 6rem;
+}
+.prose h3 {
+  color: var(--c-ink);
+  font-size: 1rem;
+  font-weight: 600;
+  margin-top: 2rem;
+  scroll-margin-top: 6rem;
+}
+.prose strong {
+  color: var(--c-ink);
+  font-weight: 600;
+}
+.prose a {
+  color: var(--c-sakura);
+  text-decoration: underline;
+  text-decoration-color: color-mix(in srgb, var(--c-sakura) 35%, transparent);
+  text-underline-offset: 3px;
+  transition: text-decoration-color 150ms ease;
+}
+.prose a:hover {
+  text-decoration-color: var(--c-sakura);
+}
+.prose ul,
+.prose ol {
+  padding-left: 1.4rem;
+}
+.prose ul {
+  list-style-type: disc;
+}
+.prose ol {
+  list-style-type: decimal;
+}
+.prose li {
+  margin-top: 0.4rem;
+}
+.prose li::marker {
+  color: var(--c-faint);
+}
+.prose blockquote {
+  border-left: 2px solid var(--c-sakura-bright);
+  padding-left: 1rem;
+  color: var(--c-faint);
+}
+.prose img {
+  border-radius: 0.5rem;
+  max-width: 100%;
+}
+.prose hr {
+  border: 0;
+  border-top: 1px solid var(--c-line);
+  margin: 2.5rem 0;
+}
+.prose code:not(pre code) {
+  background-color: var(--c-card);
+  color: var(--c-ink);
+  font-family: var(--font-mono);
+  font-size: 0.85em;
+  padding: 0.15rem 0.4rem;
+  border-radius: 0.25rem;
+}
+.prose table {
+  width: 100%;
+  font-size: 0.9rem;
+  border-collapse: collapse;
+}
+.prose th,
+.prose td {
+  border-bottom: 1px solid var(--c-line);
+  padding: 0.5rem 0.75rem;
+  text-align: left;
+}
+.prose th {
+  color: var(--c-ink);
+}
+
+/* code blocks (shiki) */
+.astro-code {
+  background-color: var(--c-card) !important;
+  border-radius: 0.5rem;
+  padding: 1.25rem;
+  font-size: 0.85rem;
+  line-height: 1.6;
+  overflow-x: auto;
+  margin-top: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+.dark .astro-code {
+  background-color: var(--c-card) !important;
+}
+.dark .astro-code span {
+  color: var(--shiki-dark) !important;
+  font-style: var(--shiki-dark-font-style) !important;
+  font-weight: var(--shiki-dark-font-weight) !important;
+}
+
+/* math (katex) */
+.katex-display {
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 0.25rem 0;
+}
+.prose .katex {
+  font-size: 1.05em;
+}
+
+/* ---------- pixel critters ---------- */
+.pixel-sprite {
+  image-rendering: pixelated;
+}
+
+@keyframes bunny-hop {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  30% {
+    transform: translateY(-3px);
+  }
+  60% {
+    transform: translateY(0);
+  }
+}
+.group\/brand:hover .bunny-mark {
+  animation: bunny-hop 0.5s ease;
+}
+
+@keyframes zz-float {
+  0% {
+    opacity: 0;
+    transform: translate(0, 0) scale(0.8);
+  }
+  30% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translate(6px, -14px) scale(1.15);
+  }
+}
+.zz {
+  animation: zz-float 3s ease-in-out infinite;
+}
+.zz-late {
+  animation-delay: 1.5s;
+}
+
+@keyframes tail-sway {
+  0%,
+  100% {
+    transform: rotate(0deg);
+  }
+  50% {
+    transform: rotate(4deg);
+  }
+}
+.cat-tail {
+  transform-origin: 15% 85%;
+  animation: tail-sway 4s ease-in-out infinite;
+}
+
+@keyframes sparkle-twinkle {
+  0%,
+  100% {
+    opacity: 0.35;
+    transform: scale(0.85);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+.sparkle {
+  animation: sparkle-twinkle 2.6s ease-in-out infinite;
+}
+.sparkle-late {
+  animation-delay: 1.3s;
+}

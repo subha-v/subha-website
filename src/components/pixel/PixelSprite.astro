@@ -1,0 +1,34 @@
+---
+// Renders a pixel sprite from a string grid: each character maps to a fill
+// color via `palette`; unmapped characters are transparent.
+interface Props {
+  grid: string[];
+  palette: Record<string, string>;
+  class?: string;
+  title?: string;
+}
+
+const { grid, palette, class: className, title } = Astro.props;
+const width = Math.max(...grid.map((row) => row.length));
+const height = grid.length;
+
+const cells: { x: number; y: number; fill: string }[] = [];
+grid.forEach((row, y) => {
+  [...row].forEach((ch, x) => {
+    const fill = palette[ch];
+    if (fill) cells.push({ x, y, fill });
+  });
+});
+---
+
+<svg
+  viewBox={`0 0 ${width} ${height}`}
+  class={`pixel-sprite ${className ?? ''}`}
+  shape-rendering="crispEdges"
+  role={title ? 'img' : undefined}
+  aria-label={title}
+  aria-hidden={title ? undefined : 'true'}
+>
+  {title && <title>{title}</title>}
+  {cells.map(({ x, y, fill }) => <rect x={x} y={y} width="1" height="1" fill={fill} />)}
+</svg>

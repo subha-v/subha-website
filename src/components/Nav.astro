@@ -1,0 +1,45 @@
+---
+import ThemeToggle from './ThemeToggle';
+
+const links = [
+  { href: '/', label: 'About' },
+  { href: '/projects', label: 'Projects' },
+  { href: '/blog', label: 'Blog' },
+  { href: '/art', label: 'Art' },
+];
+
+const path = Astro.url.pathname.replace(/\/$/, '') || '/';
+const isActive = (href: string) => (href === '/' ? path === '/' : path.startsWith(href));
+---
+
+<header class="flex items-center justify-between py-8">
+  <a href="/" class="group/brand flex items-center gap-2.5" aria-label="Home">
+    <img
+      src="/images/bunny-removebg-preview.png"
+      alt=""
+      class="bunny-mark h-7 w-7 object-contain"
+    />
+    <span class="font-pixel text-sm lowercase tracking-tight text-ink">subha</span>
+  </a>
+
+  <div class="flex items-center gap-1 sm:gap-2">
+    <nav class="flex items-center gap-4 text-sm sm:gap-5" aria-label="Main">
+      {
+        links.map(({ href, label }) => (
+          <a
+            href={href}
+            class:list={[
+              'quiet-link py-1',
+              isActive(href) &&
+                'font-medium !text-ink underline decoration-sakura-bright decoration-2 underline-offset-[6px]',
+            ]}
+            aria-current={isActive(href) ? 'page' : undefined}
+          >
+            {label}
+          </a>
+        ))
+      }
+    </nav>
+    <ThemeToggle client:load />
+  </div>
+</header>

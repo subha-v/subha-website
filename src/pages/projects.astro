@@ -1,0 +1,116 @@
+---
+import Base from '../layouts/Base.astro';
+
+const torqImages = [
+  { src: '/images/PROJECTS/project.jpeg', alt: 'TORQ self-driving Honda Accord setup' },
+  { src: '/images/PROJECTS/IMG_1479.jpg', alt: 'TORQ hardware and compute platform' },
+  { src: '/images/PROJECTS/IMG_1501.jpg', alt: 'TORQ system in action' },
+];
+---
+
+<Base title="Projects - Subha Vadlamannati">
+  <h1 class="text-2xl font-semibold tracking-tight">Projects &amp; Research</h1>
+
+  <div class="mt-10 space-y-12">
+    <section class="border-b border-line pb-12">
+      <h3 class="font-semibold text-ink">
+        TORQ: Turn Any Car into a Self-Driving Vehicle
+        <span class="ml-1 text-sm font-normal text-faint">— 1st Place, NVIDIA Edge AI Track @ TreeHacks</span>
+      </h3>
+      <div class="mt-4 grid grid-cols-1 gap-2.5 sm:grid-cols-3">
+        {
+          torqImages.map(({ src, alt }) => (
+            <img src={src} alt={alt} class="h-48 w-full rounded-lg object-cover sm:h-40" loading="lazy" />
+          ))
+        }
+      </div>
+      <div class="prose mt-4 text-[15px]">
+        <p>
+          Self-driving shouldn't be limited to new Teslas and Waymos. TORQ retrofits any existing
+          car with autonomous driving capability using commercially available hardware and
+          open-source software. We demonstrated this on a 2018 Honda Accord — using our iOS app, a
+          rider can request a pickup and the car drives itself to them.
+        </p>
+        <p>
+          The architecture separates driving into two layers: a high-level reasoning layer running
+          NVIDIA's Alpamayo R1 (a 10.5B parameter vision-language-action model) that interprets
+          scenes, plans routes, and explains its decisions in natural language, and a low-level
+          control layer derived from sunnypilot (a fork of comma.ai's openpilot) that handles lane
+          holding and smooth actuation at 100 Hz. Both layers run on an NVIDIA Jetson AGX Thor,
+          with cameras connected through the Holoscan Sensor Bridge routing uncompressed video
+          directly into GPU memory. Physical vehicle control goes through comma.ai's Red Panda CAN
+          bus adapter.
+        </p>
+        <p>
+          The rider-facing iOS app doubles as a transparency interface — passengers see live
+          reasoning from Alpamayo explaining what the car sees and why it's making each decision,
+          and can converse with the system to ask questions or suggest route changes. All testing
+          was conducted with a safety driver present. Next steps include distilling Alpamayo for
+          real-time on-device inference using Thunder Kittens and TensorRT-Edge-LLM with NVFP4
+          quantization.
+        </p>
+        <p>
+          <a href="https://github.com/bryandong24/treehacks2026">Code</a> |
+          <a href="https://devpost.com/software/torq">Devpost</a>
+        </p>
+      </div>
+    </section>
+
+    <section class="border-b border-line pb-12">
+      <h3 class="font-semibold text-ink">
+        SPRUCE: Multi-resolution Satellite Fusion for Canopy Height Prediction
+      </h3>
+      <div class="prose mt-4 text-[15px]">
+        <p>
+          We designed a multi-resolution fusion CNN that replaces proprietary imagery with
+          open-access Sentinel-1 SAR and Sentinel-2 multispectral data to predict forest canopy
+          height. To process over 7 million samples (3TB+) efficiently, we built a distributed
+          training pipeline using PyTorch DDP across 8 NVIDIA B200 GPUs, implementing mixed
+          precision training and spatial cross-validation to prevent data leakage. The resulting
+          model achieved a Mean Absolute Error of 5.08m, outperforming our single-resolution
+          baseline by 44% and demonstrating a scalable approach to global biomass monitoring.
+        </p>
+        <p>
+          <a href="https://drive.google.com/file/d/1mSdYwDoE8I80L3nHbKaP1E4GCJ-dVptE/view?usp=sharing">Paper</a>
+        </p>
+      </div>
+    </section>
+
+    <section class="border-b border-line pb-12">
+      <h3 class="font-semibold text-ink">
+        HILITe: Human-AI Collaborative Framework for Image Transcreation
+        <span class="ml-1 text-sm font-normal text-faint">(EMNLP HCI+NLP 2025)</span>
+      </h3>
+      <div class="prose mt-4 text-[15px]">
+        <p>
+          Co-authored an open-source framework that localizes images for cultural relevance by
+          routing requests across 6 specialized diffusion models via a VLM reasoning engine. By
+          integrating human-in-the-loop feedback from translators across seven countries, we built
+          a system that outperforms DALL-E 3, achieving a 25.7% improvement in accuracy over
+          automated baselines. The platform leverages ensemble modeling and reference-based masking
+          to overcome the "cultural bottleneck" in standard AI, providing a scalable solution for
+          authentic, cross-cultural content adaptation.
+        </p>
+        <p>
+          <a href="https://platform.opennlplabs.org/">View Project</a> |
+          <a href="https://ieeexplore.ieee.org/document/10825916">Paper</a>
+        </p>
+      </div>
+    </section>
+
+    <section>
+      <h3 class="font-semibold text-ink">Optimized B200 Matrix Multiplication</h3>
+      <div class="prose mt-4 text-[15px]">
+        <p>
+          Built a high-performance matrix multiplication kernel for NVIDIA's B200 GPU achieving
+          ~1200 TFLOPs. Implemented persistent kernels with multi-stage pipelining using a circular
+          buffer, leveraging the Tensor Memory Accelerator (TMA) for efficient global-to-shared
+          memory transfers and the new Blackwell TMEM for tensor core accumulation. Used BF16
+          inputs with FP32 accumulation and optimized synchronization patterns between producer and
+          consumer warps.
+        </p>
+        <p><a href="/blog/b200-matmul">Read More</a></p>
+      </div>
+    </section>
+  </div>
+</Base>

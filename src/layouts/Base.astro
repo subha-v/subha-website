@@ -1,0 +1,47 @@
+---
+import { ClientRouter } from 'astro:transitions';
+import '@fontsource-variable/geist';
+import '@fontsource-variable/geist-mono';
+import '@fontsource/silkscreen';
+import '../styles/global.css';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+
+interface Props {
+  title: string;
+  description?: string;
+}
+
+const { title, description = "Subha Vadlamannati's personal website — NLP, RL, GPU kernels, and art." } = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="icon" type="image/png" href="/images/bunny-removebg-preview.png" />
+    <script is:inline>
+      const applyTheme = () => {
+        const theme =
+          localStorage.theme ??
+          (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+        document.documentElement.classList.toggle('dark', theme === 'dark');
+      };
+      applyTheme();
+      document.addEventListener('astro:after-swap', applyTheme);
+    </script>
+    <ClientRouter />
+  </head>
+  <body class="bg-paper text-ink antialiased">
+    <div class="mx-auto flex min-h-screen w-full max-w-2xl flex-col px-6">
+      <Nav />
+      <main class="flex-1 pb-16">
+        <slot />
+      </main>
+      <Footer />
+    </div>
+  </body>
+</html>

@@ -3,3 +3,16 @@
 *.swo
 .idea/
 .vscode/
+
+# build output
+dist/
+# generated types
+.astro/
+# dependencies
+node_modules/
+npm-debug.log*
+# environment variables
+.env
+.env.production
+# playwright artifacts
+.playwright-mcp/

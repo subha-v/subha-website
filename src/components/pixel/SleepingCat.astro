@@ -1,0 +1,37 @@
+---
+// A sleeping loaf cat with floating z's. Sits at the end of blog posts.
+import PixelSprite from './PixelSprite.astro';
+
+interface Props {
+  class?: string;
+}
+const { class: className } = Astro.props;
+
+// K outline · O orange coat · D darker patches · W cream · P pink blush · L closed eyes
+const grid = [
+  '..KK...KK...........',
+  '.KOPK.KPOK..........',
+  '.KOOKKKOOK..........',
+  'KOOOOOOOOOKKKKKKK...',
+  'KOLOOOLOOOOOODDOOK..',
+  'KOOOOOOOOOOOOOOOOK..',
+  'KPOOOWOOOODDOOOOOKK.',
+  '.KOOWWWOOOOOOOOKOOK.',
+  '..KWWKWWKOOOOOOKOK..',
+  '...KKKKKKKKKKKKKK...',
+];
+const palette = {
+  K: '#4a5163',
+  O: '#f2b179',
+  D: '#e2955b',
+  W: '#fdf3e4',
+  P: '#f2a3c0',
+  L: '#7c5030',
+};
+---
+
+<div class={`relative inline-block ${className ?? ''}`}>
+  <PixelSprite grid={grid} palette={palette} class="h-10 w-auto" title="a sleeping pixel cat" />
+  <span class="zz font-pixel absolute -top-3 left-9 text-[8px] leading-none text-sakura-bright select-none" aria-hidden="true">z</span>
+  <span class="zz zz-late font-pixel absolute -top-1 left-11 text-[7px] leading-none text-faint select-none" aria-hidden="true">z</span>
+</div>

@@ -1,0 +1,26 @@
+---
+// A little cluster of twinkling pixel sparkles, used as a divider accent.
+import PixelSprite from './PixelSprite.astro';
+
+interface Props {
+  class?: string;
+}
+const { class: className } = Astro.props;
+
+const diamond = [
+  '...X...',
+  '..XXX..',
+  '.XXXXX.',
+  'XXXXXXX',
+  '.XXXXX.',
+  '..XXX..',
+  '...X...',
+];
+const dot = ['X'];
+---
+
+<span class={`inline-flex items-center gap-2 ${className ?? ''}`} aria-hidden="true">
+  <PixelSprite grid={dot} palette={{ X: 'var(--c-faint)' }} class="sparkle sparkle-late h-1 w-1" />
+  <PixelSprite grid={diamond} palette={{ X: 'var(--c-sakura-bright)' }} class="sparkle h-2.5 w-2.5" />
+  <PixelSprite grid={dot} palette={{ X: 'var(--c-faint)' }} class="sparkle sparkle-late h-1 w-1" />
+</span>
