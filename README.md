@@ -66,4 +66,6 @@ Pushing to `main` triggers the GitHub Actions workflow, which builds the site wi
 
 ## Changelog
 
+- **July 2026 — Image optimization.** Art, project, and profile images moved from `public/` into `src/assets/` and now go through Astro's build-time image pipeline (sharp): the art grid serves small WebP thumbnails and the lightbox serves a WebP capped at 1600px, cutting the art page from ~61MB to ~250KB of transfer. Oversized source files were downscaled to a 2000px max (originals remain in git history), and the lightbox pre-warms neighboring images for instant arrow-key browsing.
+
 - **July 2026 — Full UI rebuild.** Migrated the site from hand-written static HTML/CSS to Astro 5 + React 19 + Tailwind CSS 4, keeping all content identical. Blog post pages redesigned (scrollspy TOC sidebar, KaTeX, Shiki) modeled on a modern minimal blog layout. Added dark mode, view transitions, an art-gallery lightbox, and hand-made pixel-art accents (blinking bunny wordmark, sleeping cat at the end of posts, pixel 404 cat). Deployment moved from branch-based Pages to a GitHub Actions build.

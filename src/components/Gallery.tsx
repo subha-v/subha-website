@@ -1,6 +1,12 @@
 import { useCallback, useEffect, useState } from 'react';
 
-type GalleryImage = { src: string; alt: string };
+type GalleryImage = {
+  thumb: string;
+  full: string;
+  alt: string;
+  width: number;
+  height: number;
+};
 
 // Masonry-style art grid with a keyboard-navigable lightbox.
 export default function Gallery({ images }: { images: GalleryImage[] }) {
@@ -23,28 +29,36 @@ export default function Gallery({ images }: { images: GalleryImage[] }) {
     };
     window.addEventListener('keydown', onKey);
     document.body.style.overflow = 'hidden';
+    // warm the neighbors so arrow-key browsing feels instant
+    for (const delta of [1, -1]) {
+      const neighbor = images[(openIndex + delta + images.length) % images.length];
+      new Image().src = neighbor.full;
+    }
     return () => {
       window.removeEventListener('keydown', onKey);
       document.body.style.overflow = '';
     };
-  }, [openIndex, close, step]);
+  }, [openIndex, close, step, images]);
 
   return (
     <>
       <div className="columns-1 gap-4 sm:columns-2 [&>button]:mb-4">
         {images.map((img, i) => (
           <button
-            key={img.src}
+            key={img.thumb}
             type="button"
             onClick={() => setOpenIndex(i)}
             className="block w-full cursor-zoom-in overflow-hidden rounded-lg"
             aria-label={`View ${img.alt} full size`}
           >
             <img
-              src={img.src}
+              src={img.thumb}
               alt={img.alt}
+              width={img.width}
+              height={img.height}
               loading="lazy"
-              className="w-full transition-transform duration-300 ease-out hover:scale-[1.02]"
+              decoding="async"
+              className="h-auto w-full transition-transform duration-300 ease-out hover:scale-[1.02]"
             />
           </button>
         ))}
@@ -59,7 +73,7 @@ export default function Gallery({ images }: { images: GalleryImage[] }) {
           onClick={close}
         >
           <img
-            src={images[openIndex].src}
+            src={images[openIndex].full}
             alt={images[openIndex].alt}
             className="max-h-[85vh] max-w-full rounded-lg object-contain shadow-2xl"
             onClick={(e) => e.stopPropagation()}

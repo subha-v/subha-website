@@ -1,6 +1,8 @@
 ---
+import { Image } from 'astro:assets';
 import Base from '../layouts/Base.astro';
 import Sparkles from '../components/pixel/Sparkles.astro';
+import profile from '../assets/profile.jpg';
 ---
 
 <Base title="Subha Vadlamannati">
@@ -11,9 +13,12 @@ import Sparkles from '../components/pixel/Sparkles.astro';
 
   <div class="mt-8 flex flex-col gap-10 sm:flex-row">
     <div class="w-full shrink-0 sm:w-[200px]">
-      <img
-        src="/images/103_1511 Copy.png"
+      <Image
+        src={profile}
         alt="Subha Vadlamannati"
+        width={400}
+        format="webp"
+        quality={85}
         class="w-full max-w-[200px] rounded-lg"
       />
 

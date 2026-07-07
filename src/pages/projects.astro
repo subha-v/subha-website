@@ -1,10 +1,14 @@
 ---
+import { Image } from 'astro:assets';
 import Base from '../layouts/Base.astro';
+import torq1 from '../assets/projects/project.jpeg';
+import torq2 from '../assets/projects/IMG_1479.jpg';
+import torq3 from '../assets/projects/IMG_1501.jpg';
 
 const torqImages = [
-  { src: '/images/PROJECTS/project.jpeg', alt: 'TORQ self-driving Honda Accord setup' },
-  { src: '/images/PROJECTS/IMG_1479.jpg', alt: 'TORQ hardware and compute platform' },
-  { src: '/images/PROJECTS/IMG_1501.jpg', alt: 'TORQ system in action' },
+  { src: torq1, alt: 'TORQ self-driving Honda Accord setup' },
+  { src: torq2, alt: 'TORQ hardware and compute platform' },
+  { src: torq3, alt: 'TORQ system in action' },
 ];
 ---
 
@@ -20,7 +24,15 @@ const torqImages = [
       <div class="mt-4 grid grid-cols-1 gap-2.5 sm:grid-cols-3">
         {
           torqImages.map(({ src, alt }) => (
-            <img src={src} alt={alt} class="h-48 w-full rounded-lg object-cover sm:h-40" loading="lazy" />
+            <Image
+              src={src}
+              alt={alt}
+              width={640}
+              format="webp"
+              quality={80}
+              class="h-48 w-full rounded-lg object-cover sm:h-40"
+              loading="lazy"
+            />
           ))
         }
       </div>
